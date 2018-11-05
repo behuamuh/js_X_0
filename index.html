@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        body {
+            background: black;
+            height: 100vh;
+        }
+
+        #game {
+            margin: 0 auto;
+            border: 1px solid #000;
+            background: white;
+        }
+
+        #reload button {
+            margin: 0 auto;
+            display: block;
+        }
+
+        #game td {
+            border: 1px solid #000;
+            width: 50px;
+            height: 50px;
+            line-height: 40px;
+            text-align: center;
+            font-size: 40px;
+        }
+    </style>
+    <script>
+        let elements;
+        window.addEventListener("load", function () {
+            elements = document.querySelectorAll("#game td");
+            let step = 0;
+            elements.forEach(item => {
+                item.onclick = function () {
+                    item.innerHTML = step % 2 ? "X" : "0";
+                    item.onclick = null;
+                    checkBoard();
+                    step++;
+                };
+            });
+        });
+
+        function checkBoard() {
+            for (let i = 1; i < 4; i++) {
+                if (checkLineHor("X", i) || checkLineVer("X", i)) {
+                    endGame("X");
+                }
+                if (checkLineHor("0", i) || checkLineVer("0", i)) {
+                    endGame("0");
+                }
+            }
+            if (checkDiagonal("X")) {
+                endGame("X");
+            }
+            if (checkDiagonal("0")) {
+                endGame("0");
+            }
+            let full = true;
+            elements.forEach(item => (full = full && item.innerHTML));
+            if (full) {
+                endGame();
+            }
+        }
+
+        function checkLineHor(symbol, line) {
+            if (line < 1 || line > 3) {
+                throw new Error();
+            }
+            return (
+                elements[line * 3 - 3].innerHTML == symbol &&
+                elements[line * 3 - 2].innerHTML == symbol &&
+                elements[line * 3 - 1].innerHTML == symbol
+            );
+        }
+
+        function checkLineVer(symbol, line) {
+            if (line < 1 || line > 3) {
+                throw new Error();
+            }
+            return (
+                elements[line - 1].innerHTML == symbol &&
+                elements[line + 2].innerHTML == symbol &&
+                elements[line + 5].innerHTML == symbol
+            );
+        }
+
+        function checkDiagonal(symbol) {
+            return (
+                (elements[0].innerHTML == symbol &&
+                    elements[4].innerHTML == symbol &&
+                    elements[8].innerHTML == symbol) ||
+                (elements[2].innerHTML == symbol &&
+                    elements[4].innerHTML == symbol &&
+                    elements[6].innerHTML == symbol)
+            );
+        }
+
+        function endGame(symbol) {
+            elements.forEach(item => {
+                item.onclick = null;
+            });
+            if (symbol) {
+                alert("Победил - : " + symbol);
+            } else {
+                alert("Ничья");
+            }
+        }
+    </script>
+    <title>Document</title>
+</head>
+
+<body>
+    <table id="game">
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    <div id="reload">
+        <button onclick="location.reload()">Сыграть ещё</button>
+    </div>
+</body>
+
+</html>
